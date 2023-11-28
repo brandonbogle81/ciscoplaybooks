@@ -1,0 +1,33 @@
+---
+- name: Manage Local Admin Users
+  hosts: cisco_routers
+  gather_facts: no
+  connection: network_cli
+  vars_files:
+    - users.yml
+
+  tasks:
+    - name: Set Admin Users
+      cisco.ios.ios_user:
+        name: "{{ item.name }}"
+        configured_password: "{{ item.password }}"
+        state: present
+        privilege: 15
+      with_items: "{{ admin_users }}"
+
+    - name: Check for existing users
+      ios_command:
+        commands: "show running-config | include username"
+      register: existing_users_output
+
+    - name: Parse existing usernames
+      set_fact:
+        existing_users: "{{ existing_users_output.stdout[0].split('\n') | map('regex_replace', 'username (.+) privilege .+', '\\1') | list }}"
+
+    - name: Remove Unwanted Users
+      cisco.ios.ios_user:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ existing_users }}"
+      when: "{{ admin_users | map(attribute='name') | list | select('search', item) | list | count == 0 }}"
+

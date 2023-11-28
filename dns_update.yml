@@ -1,0 +1,25 @@
+---
+- name: Update DNS settings on Cisco devices
+  hosts: cisco_routers
+  gather_facts: no
+  connection: network_cli
+  become: yes
+  become_method: enable
+  vars:
+    ansible_network_os: ios
+    ansible_user: "brandonbogle"
+    ansible_ssh_pass: "NewPassword1"
+    ansible_become_pass: "your_enable_password"
+
+  tasks:
+    - name: Clear existing DNS server configurations
+      ios_config:
+        lines:
+          - "no ip name-server"
+
+    - name: Set new DNS servers
+      ios_config:
+        lines:
+          - "ip name-server 8.8.8.8"
+          - "ip name-server 8.8.4.4"
+
