@@ -1,0 +1,119 @@
+Building configuration...
+
+Current configuration : 1578 bytes
+!
+! Last configuration change at 21:51:05 UTC Fri Dec 1 2023 by brandonbogle
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+platform console virtual
+!
+hostname CSR1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+
+
+ip domain name lab.com
+ip name-server 8.8.8.8
+ip name-server 8.8.4.4
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+multilink bundle-name authenticated
+!
+!
+license udi pid CSR1000V sn 9CCLC7VO1DV
+!
+username brandonbogle privilege 15 secret 5 $1$j3BV$z4FRDYw/VROYgPoJNSVKp.
+username ansible privilege 15 secret 5 $1$9Mke$vm3nBCYXY6oCxx90e3QLq1
+!
+redundancy
+ mode none
+!
+!
+!
+ip ssh version 2
+!
+!
+!
+!
+interface GigabitEthernet1
+ ip address 192.168.4.251 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet2
+ ip address dhcp
+ negotiation auto
+!
+interface GigabitEthernet3
+ no ip address
+ shutdown
+ negotiation auto
+!
+!
+virtual-service csr_mgmt
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 192.168.4.1
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0
+ exec-timeout 20 0
+ logging synchronous
+ login local
+ transport input ssh
+line vty 1
+ exec-timeout 20 0
+ logging synchronous
+ login local
+ length 0
+ transport input ssh
+line vty 2 4
+ exec-timeout 20 0
+ logging synchronous
+ login local
+ transport input ssh
+line vty 5 15
+ exec-timeout 20 0
+ logging synchronous
+ login local
+ transport input ssh
+!
+ntp peer ip 1.pool.ntp.org
+ntp peer ip 0.pool.ntp.org prefer
+!
+end

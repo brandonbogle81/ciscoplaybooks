@@ -2,7 +2,6 @@
 - name: Manage Local Admin Users
   hosts: cisco_routers
   gather_facts: no
-  connection: network_cli
   vars_files:
     - users.yml
 
@@ -29,5 +28,5 @@
         name: "{{ item }}"
         state: absent
       loop: "{{ existing_users }}"
-      when: "{{ admin_users | map(attribute='name') | list | select('search', item) | list | count == 0 }}"
+      when: admin_users | map(attribute='name') | list | select('search', item) | list | count == 0
 

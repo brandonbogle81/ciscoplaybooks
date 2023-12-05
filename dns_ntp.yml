@@ -6,10 +6,6 @@
   become: yes
   become_method: enable
   vars:
-    ansible_network_os: ios
-    ansible_user: "brandonbogle"
-    ansible_ssh_pass: "Lab2023!"
-    ansible_become_pass: "your_enable_password"
     new_dns_servers:
       - "8.8.8.8"
       - "8.8.4.4"

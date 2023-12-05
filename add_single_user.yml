@@ -1,0 +1,29 @@
+---
+
+- name: Network Getting Started First Playbook Extended
+  connection: network_cli
+  gather_facts: false
+  hosts: cisco_routers
+  become: yes
+  become_method: enable
+  vars:
+    ansible_network_os: ios
+    ansible_user: "brandonbogle"
+    ansible_ssh_pass: "Lab2023!"
+    ansible_become_pass: "your_enable_password"
+
+  tasks:
+
+    - name: Get config for IOS devices
+      ios_facts:
+        gather_subset: all
+
+    - name: Display the config
+      debug:
+        msg: "The hostname is {{ ansible_net_hostname }} and the OS is {{ ansible_net_version }}"
+
+    - name: Create Username
+      ios_config:
+        backup: yes
+        lines:
+          - username ansible priv 15 secret ansible

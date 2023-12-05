@@ -1,7 +1,4 @@
 # users.yml
-ansible_network_os: ios
-ansible_user: "brandonbogle"
-ansible_ssh_pass: "NewPassword1"
 admin_users:
   - { name: "brandonbogle", password: "NewPassword1" }
   - { name: "nancy", password: "NewPassword2" }
