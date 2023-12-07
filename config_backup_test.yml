@@ -1,0 +1,44 @@
+---
+- name: Backup Cisco IOS Switch Configuration
+  hosts: cisco_routers
+  gather_facts: no
+
+  tasks:
+    - name: Get the current date and time
+      command: "date +'%Y_%m_%d'"
+      register: current_date
+
+    - name: Fetch the clock data from the device
+      ios_command:
+        commands:
+          - show clock
+          - show inventory
+          - show running-config
+          - show ip int brief
+          - show version
+      register: backup_data
+
+    - name: Save configuration to file
+      copy:
+        content: |
+          Command: show clock
+          Output:
+          {{ backup_data.stdout[0] }}
+
+          Command: show inventory
+          Output:
+          {{ backup_data.stdout[1] }}
+
+          Command: show running-config
+          Output:
+          {{ backup_data.stdout[2] }}
+
+          Command: show ip int brief
+          Output:
+          {{ backup_data.stdout[3] }}
+
+          Command: show version
+          Output:
+          {{ backup_data.stdout[4] }}
+        dest: "/home/brandonbogle/Documents/{{ inventory_hostname }}-{{ current_date.stdout }}.txt"
+
